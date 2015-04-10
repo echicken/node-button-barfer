@@ -1,0 +1,32 @@
+{	"name" : "button-barfer",
+	"version" : "0.0.1",
+	"license" : "BSD-3-Clause",
+	"description" : "A node.js server that barfs /r/thebutton data to clients.",
+	"author" : {
+		"name" : "echicken",
+		"email" : "echicken@bbs.electronicchicken.com"
+	},
+	"contributors" : [
+		{	"name" : "echicken",
+			"email" : "echicken@bbs.electronicchicken.com"
+		}
+	],
+	"main" : "./index.js",
+	"repository" : {
+		"type" : "git",
+		"url" : "https://github.com/echicken/node-button-barfer.git"
+	},
+	"dependencies" : {
+		"jsdom" : "3.1.2",
+		"backgrounder" : "0.2.7"
+	},
+	"engines" : {
+		"node" : ">= 0.10.24"
+	},
+	"keywords" : [
+		"button",
+		"/r/thebutton",
+		"reddit",
+		"arduino"
+	]
+}
