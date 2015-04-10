@@ -36,16 +36,16 @@ I've only tested this on Ubuntu 14.04, but I expect it will work on various othe
 
 Assuming you've got [node.js](https://nodejs.org/), [npm](https://www.npmjs.com/), and [git](http://git-scm.com/downloads) installed, the following should do the trick:
 
-'''sh
+```sh
 git clone https://github.com/echicken/node-button-barfer.git
 cd node-button-barfer
 npm install
-'''
+```
 
 Running the server is just a matter of:
-'''sh
+```sh
 node index.js
-'''
+```
 
 ### Client (Arduino) Installation
 
