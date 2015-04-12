@@ -18,7 +18,12 @@ IPAddress subnet(255,255,255,0);
 IPAddress server(192,168,1,10);
 int port = 8000;
 
-// LED pins
+/*  The anodes of our common-cathode tri-colour LED must be
+    connected to PWM-capable pins.  Meanwhile, the Ethernet
+    Shield uses pins 10-13 for SPI, meaning we can't use
+    pins 10 & 11 for PWM on the Arduino Pro.  So we'll use
+    pins 3, 5, and 6 for our LED.  Adjust these as needed
+    for your Arduino board. */
 int redPin = 6;
 int greenPin = 5;
 int bluePin = 3;
@@ -39,16 +44,26 @@ char names[10][13] = {
 
 // This will be populated with data from the server
 char values[10][10] = {
-  "0,000,000",
-  "00",
-  "0000",
-  "0000",
-  "0000",
-  "0000",
-  "0000",
-  "0000",
-  "0000",
-  "0000"
+  "0,000,000", // Presses
+  "00", // Timer
+  "0000", // Greys
+  "0000", // Purps
+  "0000", // Blues
+  "0000", // Greens
+  "0000", // Yellows
+  "0000", // Oranges
+  "0000", // Reds
+  "0000" // Noobs
+};
+
+// Our colours, as { Red, Green, Blue } values each from 0 to 255
+int colours[6][3] = {
+  { 80, 0, 80 }, // Purple
+  { 0, 0, 80 }, // Blue
+  { 0, 80, 0 }, // Green
+  { 80, 60, 0 }, // Yellow
+  { 80, 10, 0 }, // Orange
+  { 80, 0, 0 } // Red
 };
 
 EthernetClient ethernetClient;
@@ -82,39 +97,30 @@ void cycleDisplay() {
 
 }
 
+void setColour(int* colour) {
+  analogWrite(redPin, colour[0]);
+  analogWrite(greenPin, colour[1]);
+  analogWrite(bluePin, colour[2]);
+}
+
 void setFlairColour() {
-  int red;
-  int green;
-  int blue;
+
   int c = atoi(values[1]);
+
   if(c >= 52) {
-    red = 0x82;
-    green = 0x00;
-    blue = 0x80;
+    setColour(colours[0]);
   } else if(c >= 42) {
-    red = 0x00;
-    green = 0x83;
-    blue = 0xC7;
+    setColour(colours[1]);
   } else if(c >= 32) {
-    red = 0x02;
-    green = 0xBE;
-    blue = 0x01;
+    setColour(colours[2]);
   } else if(c >= 22) {
-    red = 0xE5;
-    green = 0xD9;
-    blue = 0x00;
+    setColour(colours[3]);
   } else if(c >= 12) {
-    red = 0xE5;
-    green = 0x95;
-    blue = 0x00;
+    setColour(colours[4]);
   } else if(c >= 1) {
-    red = 0xE5;
-    green = 0x00;
-    blue = 0x00;
+    setColour(colours[5]);
   }
-  analogWrite(redPin, red);
-  analogWrite(greenPin, green);
-  analogWrite(bluePin, blue);
+
 }
 
 void setup() {
@@ -122,13 +128,22 @@ void setup() {
   pinMode(redPin, OUTPUT);
   pinMode(greenPin, OUTPUT);
   pinMode(bluePin, OUTPUT);
-  
+
   u8g.setColorIndex(1); // Set up a h'wite mono display, IIRC
   u8g.setFontPosTop(); // Not sure when or how often to call this
 
   // Configure our internets
   Ethernet.begin(mac, ip, gateway, subnet);
-  delay(1000); // Ugh.
+  
+  /*  Most Ethernet Shield examples have a delay here.
+      We'll cycle through our flair colours to make it
+      more interesting.  */
+  for(int i = 0; i < 6; i++) {
+    setColour(colours[i]);
+    delay(250);
+  }
+  
+  // Now we'll connect to the node-button-barfer server
   ethernetClient.connect(server, port);
 
 }
@@ -139,7 +154,7 @@ void loop() {
    the server, that a complete set is waiting to be read.
    This is not great, but so far it hasn't borked on me.  */
   if(ethernetClient.available()) {
-    
+
     /*  I could probably do all of these in one loop, but for
      now I'll grab differently-sized values separately. */
 
@@ -189,9 +204,12 @@ void loop() {
 
     // Redraw the screen   
     cycleDisplay();
+
+    // Update the tri-colour LED
     setFlairColour();
 
   }
 
 }
+
 
