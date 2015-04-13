@@ -5,6 +5,8 @@ A node.js server that barfs /r/thebutton data to clients. (For an Arduino projec
 
 I'm using [this 2.42" OLED screen](http://www.ebay.ca/itm/131332928598) connected to an old [Arduino Pro 5V 16MHz with ATmega328](http://arduino.cc/en/Guide/ArduinoPro) with an [Ethernet Shield](http://arduino.cc/en/Main/ArduinoEthernetShield) attached.  The SDA and SCL pins of the display connect to the A4 and A5 pins on the Arduino board, respectively.  VCC and GND of the display connect to the obvious places.
 
+A common-cathode tri-colour LED has its red, green, and blue anodes connected to pins 6, 5, and 3 of the Arduino.  These pins are PWM-capable (as are pins 9, 10 and 11, however the Ethernet Shield uses pins 10 - 13 for SPI, so 10 and 11 are not available to us here.)
+
 ### Software
 
 I set out to do everything natively on the Arduino, but after a couple of frustrating hours of messing with various websocket and JSON parsing libraries, I decided to go another route (I wanted to have something working before the timer runs out.) 
